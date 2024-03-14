@@ -11,8 +11,8 @@ import (
 var (
 	RabbitMQ   = "rabbitmq"
 	RbAddress  = "0.0.0.0:5672"
-	RbUser     = "guest"
-	RbPassword = "guest"
+	RbUser     = "admin"
+	RbPassword = "admin"
 	RbTopic    = "romtyx"
 	RbLock     = sync.Mutex{}
 	RbConn     *amqp.Connection
@@ -32,6 +32,7 @@ func Connect(logger *logrus.Entry) error {
 	)
 	RbConn, RbErr = amqp.Dial(url)
 	failOnError(RbErr, "Failed to connect to RabbitMQ", logger)
+	logger.Infof("connect to RabbitMQ success.")
 
 	return nil
 }

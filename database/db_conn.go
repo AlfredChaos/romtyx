@@ -9,14 +9,15 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/sirupsen/logrus"
 )
 
 var (
 	MySQL      = "mysql"
-	DbAddress  = "0.0.0.0:3306"
+	DbAddress  = "tcp(0.0.0.0:3306)"
 	DbUser     = "root"
-	DbPassword = "123456"
+	DbPassword = "root"
 	DbName     = "romtyx"
 	DbLock     = sync.Mutex{}
 	DbConn     *gorm.DB
@@ -73,6 +74,7 @@ func Connect(logger *logrus.Entry) error {
 		logger.Error("connect database error")
 		return err
 	}
+	logger.Info("connect database success.")
 
 	return nil
 }
