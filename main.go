@@ -77,15 +77,6 @@ func startHttp(logger *log.Entry, ser *http.Server) {
 	}
 }
 
-func registerRoutes(logger *log.Entry, router *gin.Engine) {
-	v1 := router.Group(fmt.Sprintf("%s/v1", addr))
-
-	{
-		api.Upload(logger, v1)
-		api.Download(logger, v1)
-	}
-}
-
 func initDatabase(logger *log.Entry) {
 	if err := database.Connect(logger); err != nil {
 		logger.Error(err)
@@ -95,5 +86,14 @@ func initDatabase(logger *log.Entry) {
 func initNotification(logger *log.Entry) {
 	if err := notification.Connect(logger); err != nil {
 		logger.Error(err)
+	}
+}
+
+func registerRoutes(logger *log.Entry, router *gin.Engine) {
+	v1 := router.Group(fmt.Sprintf("%s/v1", addr))
+
+	{
+		api.Upload(logger, v1)
+		api.Download(logger, v1)
 	}
 }
