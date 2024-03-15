@@ -91,6 +91,10 @@ func Disconnect() error {
 	return nil
 }
 
+func DbClient() *gorm.DB {
+	return DbConn
+}
+
 func databaseMaxConns(num int) int {
 	limit := 0
 	if num <= 0 {
@@ -104,7 +108,7 @@ func databaseMaxConns(num int) int {
 
 func databaseMaxIdle(num, conns int) int {
 	limit := 0
-	if limit < 0 {
+	if num <= 0 {
 		limit = runtime.NumCPU() + 8
 	}
 	if limit > conns {
@@ -125,4 +129,14 @@ func checkDbConn(logger *logrus.Entry, db *gorm.DB) error {
 		logger.Warnf("config: unknown database server version")
 	}
 	return nil
+}
+
+type ModelBase struct {
+	ID        int64     `gorm:"type:BIGINT;primary_key;" json:"id"`
+	CreatedAt time.Time `gorm:"type:datetime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"type:datetime" json:"updated_at"`
+}
+
+func (mb *ModelBase) BeforeCreate(tx *gorm.DB) {
+
 }

@@ -21,12 +21,29 @@ func init() {
 func main() {
 	logger := log.WithFields(log.Fields{"project": "migration"})
 
-	commandPtr := flag.String("cmd", "", "up or down")
+	commandPtr := flag.String("cmd", "", "up, down or create")
+	namePtr := flag.String("name", "", "migration scripts name")
+	stypePtr := flag.String("type", "", "migration scripts type")
 	flag.Parse()
 	command := *commandPtr
-	if command != "up" && command != "down" {
+	name := *namePtr
+	stype := *stypePtr
+	arguments := make([]string, 0)
+	if command != "up" && command != "down" && command != "create" {
 		logger.Errorf("Params not support!")
 		return
+	}
+	if command == "create" {
+		if name == "" {
+			logger.Errorf("name required")
+			return
+		}
+		arguments = append(arguments, name)
+		if stype != "sql" && stype != "go" {
+			logger.Errorf("type unsupport")
+			return
+		}
+		arguments = append(arguments, stype)
 	}
 
 	migrationPath, _ := os.Getwd()
@@ -40,7 +57,7 @@ func main() {
 		logger.Errorf("set goose dialect %s error", database.MySQL)
 		return
 	}
-	arguments := make([]string, 0)
+
 	if err := goose.Run(command, sqlDb, migrationPath, arguments...); err != nil {
 		logger.Errorf("migration occurs error: %v", err)
 		return
